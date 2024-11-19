@@ -24,32 +24,21 @@ while cv.waitKey(1) != 27:
 
     tensor = tf.image.convert_image_dtype(frame, tf.float32)[tf.newaxis, ...]
 
-    # run inference using the model
     start_time = time.time()
     result = detector(tensor)
     end_time = time.time()
 
-    # save the results in a dictionary
     result = {key: value.numpy() for key, value in result.items()}
-
-    # print results
-    # print("Found %d objects." % len(result["detection_scores"]))
-    # print("Inference time: ", end_time-start_time)
-
-    # print(result["detection_scores"])
-    # print(result["detection_class_entities"])
-    # print(result["detection_boxes"])
 
     boxes = np.array(result["detection_boxes"])
     boxes[:, [0, 2]] *= H
     boxes[:, [1, 3]] *= W
 
     n_frame = utils.highlightCars(
-        frame, np.array(result["detection_scores"]), boxes.astype(int), np.array(result["detection_class_entities"]))
+        frame, np.array(result["detection_scores"]), boxes.astype(int), np.array(result["detection_class_entities"]), .08)
 
     cv.imshow(windowName, n_frame)
 
-    # break
 
 stream.release()
 cv.destroyWindow(windowName)
